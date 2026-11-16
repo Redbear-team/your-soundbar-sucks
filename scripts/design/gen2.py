@@ -37,10 +37,10 @@ SRC = {
 PLACE = {'hero-axe': 's1', 'burning-bar': 's1', 'couch': 's1', 'blindfold': 's2',
          'product': 's3', 'shredder': 's3', 'anvil': 's4'}
 LAYOUTS = {
-    'mobile': dict(W=326, pdf=pdf_m, loc=loc_m, mask=mask_m, sections={
+    'mobile': dict(W=326, pdf=pdf_m, loc=loc_m, mask=mask_m, clean=(2, 322), sections={
         's1': (82, 2236), 's2': (2236, 3314), 's3': (3314, 4856), 's4': (4856, 5512)},
         cones=(39, 1659 + 82, 252, 95)),
-    'desktop': dict(W=603, pdf=pdf_d, loc=loc_d, mask=mask_d, sections={
+    'desktop': dict(W=603, pdf=pdf_d, loc=loc_d, mask=mask_d, clean=(1, 599), sections={
         's1': (82, 1314), 's2': (1314, 1940), 's3': (1940, 2813), 's4': (2813, 3154)},
         cones=(300, 928 + 82, 252, 95)),
 }
@@ -121,6 +121,12 @@ for layout, cfg in LAYOUTS.items():
     for name, r in loc.items():
         r['_shape'] = load(name).shape[:2]
     page = cv2.imread(cfg['pdf'])[:, :, ::-1].astype(np.float64)
+    # The PDF raster's outer columns blend into the white page around it
+    # (desktop content ends at x=600, mobile starts at x=1 and ends at x=323).
+    # Replace them with the nearest clean column so no light line gets baked in.
+    clean_l, clean_r = cfg['clean']
+    page[:, :clean_l] = page[:, clean_l:clean_l + 1]
+    page[:, clean_r + 1:W] = page[:, clean_r:clean_r + 1]
     os.makedirs(os.path.join(out_dir, layout), exist_ok=True)
     placements[layout] = {}
     previews = []
@@ -163,6 +169,19 @@ for layout, cfg in LAYOUTS.items():
                 conf = np.clip(support / (0.15 * 80 ** 2), 0, 1)
                 a = conf * a_s + (1 - conf) * a
             a = np.clip(a, 0, 1) * cov
+            # Soften any photo edge that falls inside the page, so it can't read as a line.
+            ramp = 8.0
+            yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]].astype(np.float64)
+            fade = np.ones_like(a)
+            if x0 > 0:
+                fade = np.minimum(fade, np.clip((xx + 0.5) / ramp, 0, 1))
+            if x1 < W:
+                fade = np.minimum(fade, np.clip((a.shape[1] - xx - 0.5) / ramp, 0, 1))
+            if y0 > sy0:
+                fade = np.minimum(fade, np.clip((yy + 0.5) / ramp, 0, 1))
+            if y1 < sy1:
+                fade = np.minimum(fade, np.clip((a.shape[0] - yy - 0.5) / ramp, 0, 1))
+            a = a * fade
             alphas[n] = a
             C[ys, xs] = a[..., None] * I + (1 - a[..., None]) * Cb
 

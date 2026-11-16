@@ -14,7 +14,7 @@ masters, placements_path, out_dir, out_ts = sys.argv[1:5]
 P = json.load(open(placements_path))
 PAGE = {'mobile': 326, 'desktop': 603}
 # Page widths in device px: small phone 1x .. 3x phone; tablet 1x .. 1440 @2x.
-LADDER = {'mobile': [390, 640, 900, 1206], 'desktop': [768, 1206, 1600, 2160, 2894]}
+LADDER = {'mobile': [390, 640, 900], 'desktop': [768, 1206, 1600, 2160, 2894]}
 QUALITY = lambda page_px: 80 if page_px <= 1206 else 72  # high-DPR files hide more compression
 
 manifest = {}
