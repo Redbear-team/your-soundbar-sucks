@@ -857,6 +857,90 @@ p.site-footer-copy {
   scroll-margin-top: var(--nav-h);
 }
 
+/* ---------- Scroll reveal (after www.audiocu.com) ----------
+   reveal.ts adds `reveal-on` to <html> (skipped with reduced motion) and
+   `is-in` to each piece as it enters the viewport. --rd staggers pieces that
+   enter together. */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-on .sec .t,
+.reveal-on .sec .place {
+  opacity: 0;
+  transform: translate3d(0, calc(6 * var(--u)), 0);
+  transition:
+    opacity 0.8s var(--ease) var(--rd, 0ms),
+    transform 0.8s var(--ease-out) var(--rd, 0ms);
+}
+
+/* Photos fade in and settle from a slight zoom. */
+.reveal-on .sec .art {
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 1.1s var(--ease) var(--rd, 0ms),
+    transform 1.4s var(--ease-out) var(--rd, 0ms);
+}
+
+.reveal-on .sec .is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Headings: each line rises out of its own mask, 0.12s apart. The clip is
+   widened past the line box so ascenders, descenders and overhangs show. */
+.reveal-on .sec .t.rise {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-on .rise .line {
+  clip-path: inset(-0.3em -0.3em -0.12em -0.3em);
+}
+
+.reveal-on .rise .line-in {
+  display: inline-block;
+  transform: translate3d(0, 135%, 0);
+  transition: transform 1.1s var(--ease-out) calc(var(--rd, 0ms) + var(--i, 0) * 120ms);
+}
+
+.reveal-on .rise.is-in .line-in {
+  transform: none;
+}
+
+/* Couch angle cones open out from the viewer, the wide one first. */
+.reveal-on .cones .cone {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scale(0.2, 0);
+  transition: transform 1s var(--ease-out);
+}
+
+.reveal-on .cones .cone--wide {
+  transition-delay: calc(var(--rd, 0ms) + 0.25s);
+}
+
+.reveal-on .cones .cone--narrow {
+  transition-delay: calc(var(--rd, 0ms) + 0.5s);
+}
+
+.reveal-on .cones.is-in .cone {
+  transform: none;
+}
+
+@media print {
+  .reveal-on .sec .t,
+  .reveal-on .sec .place,
+  .reveal-on .sec .art,
+  .reveal-on .rise .line-in,
+  .reveal-on .cones .cone {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
