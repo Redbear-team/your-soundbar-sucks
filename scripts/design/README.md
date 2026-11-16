@@ -10,7 +10,11 @@ You need Python 3 with `opencv-python-headless`, `numpy`, `Pillow` and `psd-tool
 | --- | --- |
 | `cmyk2srgb.py` | Converts the PDF's CMYK page images to sRGB with the document's U.S. Web Coated (SWOP) v2 profile. The profile is embedded in the Shutterstock PSD. |
 | `locate.py` | Finds each source photo on a PDF page with SIFT feature matching. It gives scale, rotation, position and whether the photo is mirrored. The burning soundbar and the wood chipper are mirrored, and the product shot is rotated about 36°. |
-| `gen.py` | Renders every photo into page space at 3 px per unit, clipped to its section. It keeps the photo opaque except where it overlaps another photo or meets an inner edge. There a feathered content mask lets layers blend. It prints the placement JSON used for `src/art.ts`. |
+| `gen.py` | First version of the photo renderer, kept for reference. `gen2.py` replaces it. |
+| `lut.py` | Builds a colour lookup table from the client's screenshots of the PDF. It maps the PDF's colours to how their viewer shows them, anchored so the section colours land exactly. |
+| `textmask.js` | Renders the site with and without text to make an exact text mask for each layout. |
+| `gen2.py` | Renders every photo at its PDF scale, position, rotation and mirroring. It recovers each photo's blend mask from the PDF, so overlaps fade exactly as in the design. Leftover gradients and glows become one soft `tone-<section>` layer per section. Everything goes through the viewer colour table. It prints the placement JSON used for `src/art.ts`. |
+| `gradcheck2.py` | Measures how closely a site render matches the screenshots (blurred colour difference inside the page area). |
 | `textlines.py` | Lists white and gold text lines (box, width) on a page render. |
 | `fit.py` | Fits Figtree font sizes to measured line widths. These gave the type scale in `src/design.ts`. |
 

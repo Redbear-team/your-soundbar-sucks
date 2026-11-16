@@ -27,6 +27,10 @@ export function Section({
     <section id={anchor} className={`sec sec--${tone} ${className}`} aria-labelledby={labelledBy}>
       <div className="canvas" style={style}>
         {children}
+        <picture className="tone" aria-hidden="true">
+          <source media="(min-width: 768px)" srcSet={`/images/desktop/tone-${id}.webp`} />
+          <img src={`/images/mobile/tone-${id}.webp`} alt="" loading="lazy" decoding="async" />
+        </picture>
       </div>
     </section>
   )

@@ -236,7 +236,7 @@ function BlindTests() {
 
 function Introducing() {
   return (
-    <Section id="s3" tone="rust" className="sec--glow" labelledBy="intro-title">
+    <Section id="s3" tone="rust" labelledBy="intro-title">
       <Art name="product" alt="The AUDIO Cu transmitter and receiver, two compact black units." />
       <Art name="shredder" alt="A woman in ear defenders feeding a soundbar into a wood chipper, debris flying." />
 

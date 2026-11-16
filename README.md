@@ -24,6 +24,8 @@ The page reproduces the PDF exactly by building it in **design units** (`--u` in
 
 Text, photos and section heights are positioned with the measurements from the PDF. Line breaks are fixed to the PDF's.
 
+Colours match the PDF as the client sees it on screen. They were sampled from screenshots of the PDF, not converted from the CMYK values. The section colours are rust `#60281d`, charcoal `#2c2f2b`, slate `#2e3539` and gold `#c48f3b`.
+
 | Path | What it is |
 | --- | --- |
 | `src/design.ts` | Section positions and the type scale measured from the PDF |
@@ -32,7 +34,7 @@ Text, photos and section heights are positioned with the measurements from the P
 | `src/components/Canvas.tsx` | `Section`, `Text`, `Art` and `Place` building blocks |
 | `src/components/` | Header, menu overlay, footer, FAQ accordion, couch cones |
 | `src/links.ts` | Menu, footer and legal links (to www.audiocu.com) and the newsletter endpoint |
-| `public/images/{mobile,desktop}/` | Photos pre-rendered at their PDF scale, position, rotation and mirroring |
+| `public/images/{mobile,desktop}/` | Photos pre-rendered at their PDF scale, position, rotation and mirroring, plus a `tone-<section>` gradient layer per section |
 | `scripts/design/` | The pipeline that measured the PDF and produced the images |
 
 ## Newsletter signup
