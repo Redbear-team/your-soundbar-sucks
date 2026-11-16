@@ -25,14 +25,14 @@ export function MenuOverlay({ open, onClose }: Props) {
       aria-hidden={!open}
       inert={!open}
     >
-      <div className="page-column site-header__inner">
+      <div className="menu-overlay__bar">
         <Logo />
         <button ref={closeRef} type="button" className="menu-close" aria-label="Close menu" onClick={onClose}>
           <span />
           <span />
         </button>
       </div>
-      <nav className="page-column menu-overlay__nav" aria-label="Main">
+      <nav className="menu-overlay__nav" aria-label="Main">
         <ul>
           {menuLinks.map((link) => (
             <li key={link.href}>

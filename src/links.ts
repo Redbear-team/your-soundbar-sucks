@@ -18,17 +18,19 @@ export const menuLinks: NavLink[] = [
   { label: 'Ask Us Directly', href: main('/ask-us-directly') },
 ]
 
-/** Footer arrow links, same as the main site footer. */
+/** Footer arrow links, as in the final PDF. */
 export const footerLinks: NavLink[] = [
   { label: 'Find a dealer', href: main('/find-a-dealer') },
-  { label: 'Become a Dealer', href: main('/become-a-dealer') },
   { label: 'Common questions', href: main('/common-questions') },
   { label: 'Ask us directly', href: main('/ask-us-directly') },
 ]
 
+/** Footer legal row, as in the final PDF. www.audiocu.com has no warranty page yet,
+ * so Warranties points at the support site until one exists. */
 export const legalLinks: NavLink[] = [
   { label: 'Privacy Policy', href: main('/privacy-policy') },
   { label: 'Set Up Guides', href: 'https://www.audiocusupport.com/' },
+  { label: 'Warranties', href: 'https://www.audiocusupport.com/' },
   { label: 'Terms of Use', href: main('/terms-of-use') },
 ]
 
@@ -39,5 +41,4 @@ export const FIND_A_DEALER = main('/find-a-dealer')
  * Newsletter endpoint. The main site posts `{ email }` as JSON to /api/subscribe.
  * Override with VITE_SUBSCRIBE_URL when this site is hosted on another domain.
  */
-export const SUBSCRIBE_URL: string =
-  import.meta.env.VITE_SUBSCRIBE_URL ?? main('/api/subscribe')
+export const SUBSCRIBE_URL: string = import.meta.env.VITE_SUBSCRIBE_URL ?? main('/api/subscribe')

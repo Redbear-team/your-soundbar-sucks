@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Logo } from './Logo'
 
 type Props = { menuOpen: boolean; onMenuClick: () => void }
@@ -5,9 +6,13 @@ type Props = { menuOpen: boolean; onMenuClick: () => void }
 export function Header({ menuOpen, onMenuClick }: Props) {
   return (
     <header className="site-header">
-      <div className="page-column site-header__inner">
-        <Logo />
-        <MenuButton open={menuOpen} onClick={onMenuClick} />
+      <div className="canvas canvas--header">
+        <div className="f-abs" style={{ '--mx': 26, '--dx': 42, '--my': 24, '--dy': 24 } as CSSProperties}>
+          <Logo />
+        </div>
+        <div className="f-abs f-menu" style={{ '--mx': 273, '--dx': 544, '--my': 33, '--dy': 33 } as CSSProperties}>
+          <MenuButton open={menuOpen} onClick={onMenuClick} />
+        </div>
       </div>
     </header>
   )
