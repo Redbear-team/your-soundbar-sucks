@@ -73,12 +73,14 @@ export function Text({
   if (m) Object.assign(style, { '--mx': m[0], '--my': textTop(v, 'm', sec, m[1]) })
   if (d) Object.assign(style, { '--dx': d[0], '--dy': textTop(v, 'd', sec, d[1]) })
   const vis = !m ? 'only-d' : !d ? 'only-m' : ''
+  // Headings given as lines rise into place one line at a time.
+  const rise = lines && Tag.startsWith('h') ? 'rise' : ''
   return (
-    <Tag id={id} className={`t t--${v} ${vis} ${className}`} style={style}>
+    <Tag id={id} className={`t t--${v} ${vis} ${rise} ${className}`} style={style}>
       {lines
         ? lines.map((line, i) => (
-            <span className="line" key={i}>
-              {line}
+            <span className="line" key={i} style={rise ? ({ '--i': i } as CssVars) : undefined}>
+              {rise ? <span className="line-in">{line}</span> : line}
             </span>
           ))
         : children}

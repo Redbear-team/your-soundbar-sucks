@@ -8,6 +8,7 @@ import { Header } from './components/Header'
 import { MenuPanel } from './components/MenuOverlay'
 import { textTop } from './design'
 import { FIND_A_DEALER, HOW_IT_WORKS } from './links'
+import { useReveal } from './reveal'
 
 export default function App() {
   // Menu behaviour ported from www.audiocu.com: slides in from the right, slides
@@ -16,6 +17,7 @@ export default function App() {
   const [menuKey, setMenuKey] = useState(0)
   const panelRef = useRef<HTMLElement>(null)
   const closingRef = useRef(false)
+  useReveal()
 
   const openMenu = useCallback(() => {
     closingRef.current = false
