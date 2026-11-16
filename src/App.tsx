@@ -1,41 +1,101 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Arrow } from './components/Arrow'
 import { Art, Section, Text } from './components/Canvas'
 import { CouchCones } from './components/CouchCones'
 import { Faq } from './components/Faq'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
-import { MenuOverlay } from './components/MenuOverlay'
+import { MenuPanel } from './components/MenuOverlay'
 import { textTop } from './design'
 import { FIND_A_DEALER, HOW_IT_WORKS } from './links'
 
 export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const openMenu = useCallback(() => setMenuOpen(true), [])
-  const closeMenu = useCallback(() => setMenuOpen(false), [])
+  // Menu behaviour ported from www.audiocu.com: slides in from the right, slides
+  // out on close; scroll lock on phones only; Esc or a click outside closes it.
+  const [menuPresent, setMenuPresent] = useState(false)
+  const [menuKey, setMenuKey] = useState(0)
+  const panelRef = useRef<HTMLElement>(null)
+  const closingRef = useRef(false)
+
+  const openMenu = useCallback(() => {
+    closingRef.current = false
+    setMenuKey((key) => key + 1)
+    setMenuPresent(true)
+  }, [])
+
+  const closeMenu = useCallback(() => {
+    if (closingRef.current) return
+    const panel = panelRef.current
+    if (!panel || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setMenuPresent(false)
+      return
+    }
+    closingRef.current = true
+    panel.getAnimations().forEach((animation) => animation.cancel())
+    const animation = panel.animate([{ transform: 'translate3d(0, 0, 0)' }, { transform: 'translate3d(110%, 0, 0)' }], {
+      duration: 420,
+      easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      fill: 'forwards',
+    })
+    animation.onfinish = () => {
+      closingRef.current = false
+      setMenuPresent(false)
+    }
+  }, [])
 
   useEffect(() => {
-    document.body.classList.toggle('menu-open', menuOpen)
-  }, [menuOpen])
+    if (!menuPresent) return
+    const desktopQuery = window.matchMedia('(min-width: 768px)')
+    const syncScrollLock = () => {
+      document.body.style.overflow = desktopQuery.matches ? '' : 'hidden'
+    }
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') closeMenu()
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (!desktopQuery.matches) return
+      const target = event.target as Node | null
+      if (!target || panelRef.current?.contains(target)) return
+      if (document.querySelector('.site-header button')?.contains(target)) return
+      closeMenu()
+    }
+    syncScrollLock()
+    desktopQuery.addEventListener('change', syncScrollLock)
+    window.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointerDown, { passive: true })
+    return () => {
+      document.body.style.overflow = ''
+      desktopQuery.removeEventListener('change', syncScrollLock)
+      window.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [menuPresent, closeMenu])
+
+  const toggleMenu = () => (menuPresent ? closeMenu() : openMenu())
+  const onFooterMenuClick = () => {
+    if (menuPresent) return closeMenu()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    openMenu()
+  }
 
   return (
     <>
-      <div className="page">
-        <a className="skip-link" href="#main">
-          Skip to content
-        </a>
-        <Header menuOpen={menuOpen} onMenuClick={openMenu} />
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <Header menuOpen={menuPresent} onMenuClick={toggleMenu} />
+      {menuPresent && <MenuPanel key={menuKey} ref={panelRef} onClose={closeMenu} />}
 
+      <div className="page">
         <main id="main">
           <Intro />
           <BlindTests />
           <Introducing />
           <WhatComesNext />
         </main>
-
-        <Footer menuOpen={menuOpen} onMenuClick={openMenu} />
       </div>
-      <MenuOverlay open={menuOpen} onClose={closeMenu} />
+
+      <Footer menuOpen={menuPresent} onMenuClick={onFooterMenuClick} />
     </>
   )
 }

@@ -99,11 +99,22 @@ export function Art({ name, alt, priority = false }: { name: ArtName; alt: strin
     '--dw': a.d.w,
     '--dhh': a.d.h,
   }
+  // Each layout has its own size ladder; the browser picks a file for the
+  // photo's rendered width and the screen's pixel density.
+  const set = (layout: 'mobile' | 'desktop', sizes: number[]) =>
+    sizes.map((w) => `/images/${layout}/${name}-${w}.webp ${w}w`).join(', ')
+  const maxDesktop = Math.round((a.d.w * 1440) / 603)
   return (
     <picture className="art" style={style}>
-      <source media="(min-width: 768px)" srcSet={`/images/desktop/${name}.webp`} />
+      <source
+        media="(min-width: 768px)"
+        srcSet={set('desktop', a.d.sizes)}
+        sizes={`min(calc(${a.d.w} * 100vw / 603), ${maxDesktop}px)`}
+      />
       <img
-        src={`/images/mobile/${name}.webp`}
+        src={`/images/mobile/${name}-${a.m.sizes[Math.min(2, a.m.sizes.length - 1)]}.webp`}
+        srcSet={set('mobile', a.m.sizes)}
+        sizes={`calc(${a.m.w} * 100vw / 326)`}
         alt={alt}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}

@@ -32,10 +32,26 @@ Colours match the PDF as the client sees it on screen. They were sampled from sc
 | `src/art.ts` | Where each photo sits on each layout (generated) |
 | `src/App.tsx` | The page: every text block with its PDF position |
 | `src/components/Canvas.tsx` | `Section`, `Text`, `Art` and `Place` building blocks |
-| `src/components/` | Header, menu overlay, footer, FAQ accordion, couch cones |
+| `src/components/` | Header, slide-in menu and footer (ported from the main site), FAQ accordion, couch cones |
 | `src/links.ts` | Menu, footer and legal links (to www.audiocu.com) and the newsletter endpoint |
-| `public/images/{mobile,desktop}/` | Photos pre-rendered at their PDF scale, position, rotation and mirroring, plus a `tone-<section>` gradient layer per section |
+| `public/images/{mobile,desktop}/` | Photos pre-rendered at their PDF scale, position, rotation and mirroring, as WebP in several widths (`<name>-<width>.webp`, served with `srcset`), plus a `tone-<section>` gradient layer per section |
+| `public/brand/` | AUDIO Cu logo in the main site's three widths |
 | `scripts/design/` | The pipeline that measured the PDF and produced the images |
+
+## Header, menu and footer
+
+These are ported from the main site's repo (`Redbear-team/audiocu`, `web/src/App.tsx`, `nav.tsx`, `SiteFooter.tsx` and `index.css`). They have the same sizes, fonts, colours, slide-in menu and footer layout, with all links pointing to www.audiocu.com. If the main site's header or footer changes, port the change here too.
+
+## Image sizes
+
+| Screen | Photo size used | Whole page |
+| --- | --- | --- |
+| Phone, 1x | 390 px | about 285 KB |
+| Phone, 3x | 900 px (capped) | about 1 MB |
+| Laptop 1440, 1x | 1600 px | about 1.3 MB |
+| Laptop 1440, 2x | 2894 px | about 2.6 MB |
+
+Photos below the first screen load as you scroll. Only the hero and the logo are preloaded.
 
 ## Newsletter signup
 

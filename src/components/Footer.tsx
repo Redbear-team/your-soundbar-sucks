@@ -1,106 +1,135 @@
-import { useState, type CSSProperties, type FormEvent } from 'react'
+import { useState, type FormEvent, type ReactNode } from 'react'
 import { footerLinks, legalLinks, SUBSCRIBE_URL } from '../links'
-import { Arrow } from './Arrow'
-import { MenuButton } from './Header'
 import { Logo } from './Logo'
 
-type Status = { kind: 'idle' | 'sending' | 'ok' | 'error'; message: string }
+/** Site footer, ported from www.audiocu.com (web/src/SiteFooter.tsx). */
 
-/** Places a footer element at [mobile x, desktop x, y] in design units. */
-const at = (mx: number, dx: number, y: number) => ({ '--mx': mx, '--dx': dx, '--my': y, '--dy': y }) as CSSProperties
+function AskArrowLink({ href, className, children }: { href: string; className?: string; children: ReactNode }) {
+  return (
+    <a href={href} className={`ask-arrow-link ${className ?? ''}`}>
+      {children}
+      <span className="ask-arrow" aria-hidden="true">
+        {' '}
+        →
+      </span>
+    </a>
+  )
+}
 
 export function Footer({ menuOpen, onMenuClick }: { menuOpen: boolean; onMenuClick: () => void }) {
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<Status>({ kind: 'idle', message: '' })
+  const [sending, setSending] = useState(false)
+  const [message, setMessage] = useState('')
+  const [messageTone, setMessageTone] = useState<'success' | 'error' | ''>('')
 
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault()
-    if (!email) return
-    setStatus({ kind: 'sending', message: '' })
+  async function submitSignup(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setSending(true)
+    setMessage('')
+    setMessageTone('')
     try {
-      const res = await fetch(SUBSCRIBE_URL, {
+      const response = await fetch(SUBSCRIBE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ email }),
       })
-      if (!res.ok) throw new Error(String(res.status))
-      setEmail('')
-      setStatus({ kind: 'ok', message: "You're on the list." })
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null
+      if (response.ok && data?.ok) {
+        setEmail('')
+        setMessageTone('success')
+        setMessage("Thanks, you're on the list.")
+        return
+      }
+      setMessageTone('error')
+      setMessage(
+        data?.error === 'invalid_email'
+          ? 'Please enter a valid email address.'
+          : 'Something went wrong. Please try again in a moment.',
+      )
     } catch {
-      setStatus({ kind: 'error', message: 'Something went wrong. Please try again.' })
+      setMessageTone('error')
+      setMessage('Something went wrong. Please try again in a moment.')
+    } finally {
+      setSending(false)
     }
   }
 
   return (
-    <footer className="site-footer">
-      <div className="canvas canvas--footer">
-        <div className="f-abs" style={at(31, 156, 22)}>
-          <Logo />
-        </div>
-        <div className="f-abs f-menu" style={at(277, 402, 30)}>
-          <MenuButton open={menuOpen} onClick={onMenuClick} />
-        </div>
-
-        <nav className="f-abs f-links" style={at(50, 185, 86.4)} aria-label="Footer">
-          {footerLinks.map((link) => (
-            <a key={link.href + link.label} href={link.href}>
-              {link.label} <Arrow />
-            </a>
-          ))}
-        </nav>
-
-        <form
-          className="f-abs f-form"
-          style={at(166, 301, 91.2)}
-          onSubmit={onSubmit}
-          aria-busy={status.kind === 'sending'}
-        >
-          <label htmlFor="footer-email" className="f-signup">
-            <span className="line">Hear about it before</span>
-            <span className="line">anyone else does.</span>
-          </label>
-          <input
-            id="footer-email"
-            type="email"
-            name="email"
-            placeholder="Enter Email Here"
-            autoComplete="email"
-            required
-            value={email}
-            disabled={status.kind === 'sending'}
-            onChange={(e) => setEmail(e.target.value)}
-            aria-describedby="footer-signup-status"
-            aria-invalid={status.kind === 'error'}
-          />
-          <button type="submit" className="visually-hidden">
-            Sign up
+    <footer className="site-footer site-footer-enter">
+      <div className="page-column site-footer-column">
+        <div className="site-footer-head">
+          <Logo className="site-footer-logo" />
+          <button
+            type="button"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="site-menu"
+            onClick={onMenuClick}
+            className="site-footer-menu-icon"
+          >
+            <span />
+            <span />
+            <span />
           </button>
-          <p id="footer-signup-status" className="f-status" role="status">
-            {status.message}
-          </p>
-        </form>
-
-        <nav className="f-legal" aria-label="Legal">
-          {legalLinks.map((link, i) => (
+        </div>
+        <div className="site-footer-grid">
+          <nav className="site-footer-nav" aria-label="Footer">
+            {footerLinks.map((item) => (
+              <AskArrowLink key={item.href} href={item.href} className="site-footer-nav-link">
+                {item.label}
+              </AskArrowLink>
+            ))}
+          </nav>
+          <div className="site-footer-signup">
+            <p className="site-footer-signup-head">
+              <span className="block">Hear about it before</span>
+              <span className="block">anyone else does.</span>
+            </p>
+            <form className="site-footer-form" onSubmit={submitSignup} noValidate aria-busy={sending}>
+              <label className="site-footer-email">
+                <span className="visually-hidden">Enter Email Here</span>
+                <input
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="Enter Email Here"
+                  autoComplete="email"
+                  required
+                  disabled={sending}
+                  aria-invalid={messageTone === 'error'}
+                  aria-describedby="footer-signup-status"
+                />
+              </label>
+              <button type="submit" className="site-footer-signup-button" disabled={sending}>
+                Sign up
+                <span className="ask-arrow" aria-hidden="true">
+                  {' '}
+                  →
+                </span>
+              </button>
+              <p id="footer-signup-status" className="site-footer-signup-status" role="status" aria-live="polite">
+                {message}
+              </p>
+            </form>
+          </div>
+        </div>
+        <div className="site-footer-legal">
+          {legalLinks.map((item) => (
             <a
-              key={link.label}
-              href={link.href}
-              className="f-abs"
-              style={at([49, 116, 185, 247][i], [185, 252, 321, 383][i], 169.5)}
+              key={item.href}
+              href={item.href}
+              className="site-footer-legal-link"
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener noreferrer' : undefined}
             >
-              {link.label}
+              {item.label}
             </a>
           ))}
-        </nav>
-
-        <p className="f-copyright">
-          <span className="line">
-            © Copyright {new Date().getFullYear()} AUDIO Cu, Fasetto, Inc. Dolby®, Dolby Atmos®, Dolby Digital®, Dolby
-            TrueHD®,
-          </span>{' '}
-          <span className="line">
-            and the double-D symbol are trademarks of Dolby® Laboratories Licensing Corporation. Used under license.
-          </span>
+        </div>
+        <p className="site-footer-copy">
+          © Copyright 2026 AUDIO Cu, Fasetto, Inc. Dolby®, Dolby Atmos®, Dolby Digital®, Dolby TrueHD®, and the double-D
+          symbol are trademarks of Dolby® Laboratories Licensing Corporation. Used under license.
         </p>
       </div>
     </footer>

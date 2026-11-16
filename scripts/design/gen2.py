@@ -22,7 +22,7 @@ from lut import apply_anchored  # noqa: E402
 
 links, loc_m, loc_d, pdf_m, pdf_d, lut_path, out_dir, prev_dir, mask_m, mask_d = sys.argv[1:11]
 VOL = np.load(lut_path)['vol']
-F = 3          # output px per design unit
+F_BY_LAYOUT = {'mobile': 3.7, 'desktop': 4.8}  # master px per design unit (largest srcset size)
 TONE_F = 0.5   # tone layer px per unit (it is very smooth)
 
 SRC = {
@@ -115,6 +115,7 @@ def save_webp(path, rgb, a):
 
 placements = {}
 for layout, cfg in LAYOUTS.items():
+    F = F_BY_LAYOUT[layout]
     W = cfg['W']
     loc = json.load(open(cfg['loc']))['results']
     for name, r in loc.items():
@@ -199,7 +200,11 @@ for layout, cfg in LAYOUTS.items():
                 a_up = np.minimum(a_up, cov) if a_up.max() > 0 else cov
             a_up = np.where(a_up > 0.985, 1.0, a_up) * (cov if n != 'product' else 1)
             rgb_v = to_viewer(rgb)
-            has_a, kb = save_webp(os.path.join(out_dir, layout, f'{n}.webp'), rgb_v, a_up)
+            # Lossless master; make_sizes.py exports the WebP ladder from it.
+            rgba = np.dstack([np.clip(np.round(rgb_v), 0, 255), np.clip(np.round(a_up * 255), 0, 255)]).astype(np.uint8)
+            has_a = bool((rgba[:, :, 3] < 250).any())
+            Image.fromarray(rgba if has_a else rgba[:, :, :3]).save(os.path.join(out_dir, layout, f'{n}.png'), compress_level=1)
+            kb = 0
             placements[layout][n] = dict(section=sec, x=x0, y=y0 - sy0, w=x1 - x0, h=y1 - y0, alpha=has_a, kb=kb)
             sm_rgb = cv2.resize(rgb_v, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
             sm_a = cv2.resize(a_up, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)[..., None]

@@ -13,7 +13,8 @@ You need Python 3 with `opencv-python-headless`, `numpy`, `Pillow` and `psd-tool
 | `gen.py` | First version of the photo renderer, kept for reference. `gen2.py` replaces it. |
 | `lut.py` | Builds a colour lookup table from the client's screenshots of the PDF. It maps the PDF's colours to how their viewer shows them, anchored so the section colours land exactly. |
 | `textmask.js` | Renders the site with and without text to make an exact text mask for each layout. |
-| `gen2.py` | Renders every photo at its PDF scale, position, rotation and mirroring. It recovers each photo's blend mask from the PDF, so overlaps fade exactly as in the design. Leftover gradients and glows become one soft `tone-<section>` layer per section. Everything goes through the viewer colour table. It prints the placement JSON used for `src/art.ts`. |
+| `gen2.py` | Renders every photo at its PDF scale, position, rotation and mirroring. It recovers each photo's blend mask from the PDF, so overlaps fade exactly as in the design. Leftover gradients and glows become one soft `tone-<section>` layer per section. Everything goes through the viewer colour table. It writes lossless PNG masters and prints the placement JSON for `make_sizes.py`. |
+| `make_sizes.py` | Exports the responsive WebP sizes from the lossless masters `gen2.py` writes (mobile 3.7 px per unit, desktop 4.8). It also writes `src/art.ts` with each photo's placement and available widths. |
 | `gradcheck2.py` | Measures how closely a site render matches the screenshots (blurred colour difference inside the page area). |
 | `textlines.py` | Lists white and gold text lines (box, width) on a page render. |
 | `fit.py` | Fits Figtree font sizes to measured line widths. These gave the type scale in `src/design.ts`. |
