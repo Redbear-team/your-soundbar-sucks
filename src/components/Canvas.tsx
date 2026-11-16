@@ -13,6 +13,7 @@ export function Section({
   className = '',
   labelledBy,
   anchor,
+  hero = false,
   children,
 }: {
   id: SectionId
@@ -20,17 +21,31 @@ export function Section({
   className?: string
   labelledBy?: string
   anchor?: string
+  /**
+   * The section opens with the hero, which fills the first screen: everything
+   * not marked `hero` moves down by the space left over (see `.sec--hero`).
+   * The tone layer is drawn twice, the part over the hero held in place and the
+   * rest moved with the content below, so it stays registered to the photos.
+   */
+  hero?: boolean
   children: ReactNode
 }) {
   const style: CssVars = { '--mh': sectionHeight.m[id], '--dh': sectionHeight.d[id] }
+  const tones = hero ? ['tone tone--top', 'tone tone--rest'] : ['tone']
   return (
-    <section id={anchor} className={`sec sec--${tone} ${className}`} aria-labelledby={labelledBy}>
+    <section
+      id={anchor}
+      className={`sec sec--${tone} ${hero ? 'sec--hero' : ''} ${className}`}
+      aria-labelledby={labelledBy}
+    >
       <div className="canvas" style={style}>
         {children}
-        <picture className="tone" aria-hidden="true">
-          <source media="(min-width: 768px)" srcSet={`/images/desktop/tone-${id}.webp`} />
-          <img src={`/images/mobile/tone-${id}.webp`} alt="" loading="lazy" decoding="async" />
-        </picture>
+        {tones.map((cls) => (
+          <picture key={cls} className={cls} aria-hidden="true">
+            <source media="(min-width: 768px)" srcSet={`/images/desktop/tone-${id}.webp`} />
+            <img src={`/images/mobile/tone-${id}.webp`} alt="" loading="lazy" decoding="async" />
+          </picture>
+        ))}
       </div>
     </section>
   )
@@ -89,7 +104,18 @@ export function Text({
 }
 
 /** A photo rendered into PDF page space for each layout (see scripts/README). */
-export function Art({ name, alt, priority = false }: { name: ArtName; alt: string; priority?: boolean }) {
+export function Art({
+  name,
+  alt,
+  priority = false,
+  file = name,
+}: {
+  name: ArtName
+  alt: string
+  priority?: boolean
+  /** Image files to use, when they differ from the placement name. */
+  file?: string
+}) {
   const a = art[name]
   const style: CssVars = {
     '--mx': a.m.x,
@@ -104,17 +130,17 @@ export function Art({ name, alt, priority = false }: { name: ArtName; alt: strin
   // Each layout has its own size ladder; the browser picks a file for the
   // photo's rendered width and the screen's pixel density.
   const set = (layout: 'mobile' | 'desktop', sizes: number[]) =>
-    sizes.map((w) => `/images/${layout}/${name}-${w}.webp ${w}w`).join(', ')
+    sizes.map((w) => `/images/${layout}/${file}-${w}.webp ${w}w`).join(', ')
   const maxDesktop = Math.round((a.d.w * 1440) / 603)
   return (
-    <picture className="art" style={style}>
+    <picture className={`art art--${name}`} style={style}>
       <source
         media="(min-width: 768px)"
         srcSet={set('desktop', a.d.sizes)}
         sizes={`min(calc(${a.d.w} * 100vw / 603), ${maxDesktop}px)`}
       />
       <img
-        src={`/images/mobile/${name}-${a.m.sizes[Math.min(2, a.m.sizes.length - 1)]}.webp`}
+        src={`/images/mobile/${file}-${a.m.sizes[Math.min(2, a.m.sizes.length - 1)]}.webp`}
         srcSet={set('mobile', a.m.sizes)}
         sizes={`calc(${a.m.w} * 100vw / 326)`}
         alt={alt}

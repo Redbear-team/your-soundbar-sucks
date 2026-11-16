@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 /** Selector for every piece that animates in. `.tone` gradients stay put. */
-const PIECES = '.sec .t, .sec .art, .sec .place'
+const PIECES = '.sec .t, .sec .art, .sec .place, .sec .shards'
 /** Gap between pieces that enter the viewport together, top to bottom. */
 const STAGGER_MS = 90
 const MAX_STAGGER_STEPS = 5

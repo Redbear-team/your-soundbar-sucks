@@ -121,10 +121,11 @@ ul {
 /* Absolutely placed pieces read --mx/--my (mobile) or --dx/--dy (desktop). */
 .t,
 .art,
+.shards,
 .place {
   position: absolute;
   left: calc(var(--x) * var(--u));
-  top: calc(var(--y) * var(--u));
+  top: calc(var(--y) * var(--u) + var(--shift, 0px));
   --x: var(--mx);
   --y: var(--my);
 }
@@ -140,6 +141,7 @@ ul {
 
   .t,
   .art,
+  .shards,
   .place {
     --x: var(--dx);
     --y: var(--dy);
@@ -151,6 +153,64 @@ ul {
 
   .only-m {
     display: none;
+  }
+}
+
+/* ---------- Hero fills the first screen ----------
+   The hero (photo, shards and everything marked .hero) keeps its place. The
+   rest of the first section moves down by --gap: the room left between the
+   hero's end (--hero, section units) and the bottom of the screen. When the
+   hero is already as tall as the screen, --gap is 0 and nothing moves.
+   svh keeps it steady while phone toolbars show and hide. */
+.sec--hero .canvas {
+  --hero: 540;
+  --gap: max(0px, 100vh - var(--nav-h) - var(--hero) * var(--u));
+  min-height: calc(var(--mh) * var(--u) + var(--gap));
+}
+
+@supports (height: 100svh) {
+  .sec--hero .canvas {
+    --gap: max(0px, 100svh - var(--nav-h) - var(--hero) * var(--u));
+  }
+}
+
+@container (min-width: 768px) {
+  .sec--hero .canvas {
+    --hero: 360;
+    min-height: calc(var(--dh) * var(--u) + var(--gap));
+  }
+}
+
+.sec--hero .canvas > :is(.t, .place, .art, .anchor):not(.hero, .art--hero-axe) {
+  --shift: var(--gap);
+}
+
+/* Tone: the top copy covers the hero and stops at --tone-cut; the other copy
+   moves down with the content below it. On desktop the tone over the hero is
+   all burning-bar glow, which moves, so the cut is 0. */
+.sec--hero .tone {
+  bottom: auto;
+  height: calc(var(--mh) * var(--u));
+  --tone-cut: var(--hero);
+}
+
+.sec--hero .tone--top {
+  clip-path: inset(0 0 calc((var(--mh) - var(--tone-cut)) * var(--u)) 0);
+}
+
+.sec--hero .tone--rest {
+  top: var(--gap);
+  clip-path: inset(calc(var(--tone-cut) * var(--u)) 0 0 0);
+}
+
+@container (min-width: 768px) {
+  .sec--hero .tone {
+    height: calc(var(--dh) * var(--u));
+    --tone-cut: 0;
+  }
+
+  .sec--hero .tone--top {
+    clip-path: inset(0 0 calc((var(--dh) - var(--tone-cut)) * var(--u)) 0);
   }
 }
 
@@ -168,7 +228,8 @@ ul {
 }
 
 /* Photos are pre-rendered in PDF page space for each layout. */
-.art {
+.art,
+.shards {
   z-index: 0;
   width: calc(var(--w) * var(--u));
   height: calc(var(--hh) * var(--u));
@@ -177,7 +238,8 @@ ul {
 }
 
 @container (min-width: 768px) {
-  .art {
+  .art,
+  .shards {
     --w: var(--dw);
     --hh: var(--dhh);
   }
@@ -189,6 +251,16 @@ ul {
 }
 
 /* Smooth gradients and glows from the PDF, layered over the photos and under the text. */
+.shards {
+  pointer-events: none;
+}
+
+.shard {
+  position: absolute;
+  background-image: var(--atlas);
+  background-repeat: no-repeat;
+}
+
 .tone {
   position: absolute;
   inset: 0;
@@ -204,6 +276,7 @@ ul {
 /* Beyond the PDF's widest size the canvas is centred, so fade photo edges into the section colour. */
 @media (min-width: 1441px) {
   .art,
+  .shards,
   .tone {
     -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
@@ -280,7 +353,7 @@ a:hover .arrow--right {
 
 .anchor {
   position: absolute;
-  top: calc(var(--y) * var(--u));
+  top: calc(var(--y) * var(--u) + var(--shift, 0px));
   --y: var(--my);
 }
 
@@ -929,12 +1002,33 @@ p.site-footer-copy {
   transform: none;
 }
 
+/* Hero: the photo fades in without the zoom, so the shards stay registered to it.
+   The shards burst out of the axe strike and slow to a stop where the photo froze
+   them (--sx/--sy start offset in design units, --spin, --delay from shards.ts). */
+.reveal-on .sec .art--hero-axe {
+  transform: none;
+}
+
+.reveal-on .shard {
+  opacity: 0;
+  transform: translate3d(calc(var(--sx) * var(--u)), calc(var(--sy) * var(--u)), 0) rotate(var(--spin)) scale(0.35);
+}
+
+.reveal-on .shards.is-in[data-ready] .shard {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 2.8s cubic-bezier(0.08, 0.82, 0.17, 1) calc(var(--delay) + 0.3s),
+    opacity 0.2s linear calc(var(--delay) + 0.3s);
+}
+
 @media print {
   .reveal-on .sec .t,
   .reveal-on .sec .place,
   .reveal-on .sec .art,
   .reveal-on .rise .line-in,
-  .reveal-on .cones .cone {
+  .reveal-on .cones .cone,
+  .reveal-on .shard {
     opacity: 1;
     transform: none;
     transition: none;

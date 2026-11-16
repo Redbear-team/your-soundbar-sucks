@@ -5,6 +5,7 @@ import { CouchCones } from './components/CouchCones'
 import { Faq } from './components/Faq'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
+import { Shards } from './components/Shards'
 import { MenuPanel } from './components/MenuOverlay'
 import { textTop } from './design'
 import { FIND_A_DEALER, HOW_IT_WORKS } from './links'
@@ -105,13 +106,26 @@ export default function App() {
 /** Hero, "you bought a soundbar…" and "lousy impression" share one rust section. */
 function Intro() {
   return (
-    <Section id="s1" tone="rust" labelledBy="hero-title">
-      <Art name="hero-axe" priority alt="A man in safety glasses smashing a soundbar in half with an axe." />
+    <Section id="s1" tone="rust" labelledBy="hero-title" hero>
+      <Art
+        name="hero-axe"
+        file="hero-plate"
+        priority
+        alt="A man in safety glasses smashing a soundbar in half with an axe."
+      />
+      <Shards />
       <Art name="burning-bar" alt="A soundbar on fire on a workbench, a woman peeking out from behind it." />
       <Art name="couch" alt="A man on a couch facing a TV with a soundbar, flanked by two tower speakers." />
       <CouchCones />
 
-      <Text v="eyebrow" sec="s1" m={[60, 118]} d={[60, 144]} lines={['Sorry. Somebody', 'needs to say it.']} />
+      <Text
+        v="eyebrow"
+        sec="s1"
+        m={[60, 118]}
+        d={[60, 144]}
+        className="hero"
+        lines={['Sorry. Somebody', 'needs to say it.']}
+      />
       <Text
         as="h1"
         id="hero-title"
@@ -119,14 +133,15 @@ function Intro() {
         sec="s1"
         m={[59, 169]}
         d={[60, 195]}
+        className="hero"
         lines={['Your', 'soundbar', 'suuucks.']}
       />
-      <Text as="div" v="link" sec="s1" m={[59, 551]} d={[60, 326]}>
+      <Text as="div" v="link" sec="s1" m={[59, 551]} d={[60, 326]} className="hero">
         <a href="#why-it-sucks">
           Why it sucks <Arrow />
         </a>
       </Text>
-      <Text as="div" v="link" sec="s1" m={[59, 567]} d={null}>
+      <Text as="div" v="link" sec="s1" m={[59, 567]} d={null} className="hero">
         <a href={FIND_A_DEALER}>
           Find a dealer <Arrow />
         </a>
