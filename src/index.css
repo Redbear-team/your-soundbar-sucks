@@ -124,7 +124,7 @@ ul {
 .place {
   position: absolute;
   left: calc(var(--x) * var(--u));
-  top: calc(var(--y) * var(--u));
+  top: calc(var(--y) * var(--u) + var(--shift, 0px));
   --x: var(--mx);
   --y: var(--my);
 }
@@ -151,6 +151,64 @@ ul {
 
   .only-m {
     display: none;
+  }
+}
+
+/* ---------- Hero fills the first screen ----------
+   The hero (photo and everything marked .hero) keeps its place. The rest of
+   the first section moves down by --gap: the room left between the hero's end
+   (--hero, section units) and the bottom of the screen. When the hero is
+   already as tall as the screen, --gap is 0 and nothing moves. svh keeps it
+   steady while phone toolbars show and hide. */
+.sec--hero .canvas {
+  --hero: 540;
+  --gap: max(0px, 100vh - var(--nav-h) - var(--hero) * var(--u));
+  min-height: calc(var(--mh) * var(--u) + var(--gap));
+}
+
+@supports (height: 100svh) {
+  .sec--hero .canvas {
+    --gap: max(0px, 100svh - var(--nav-h) - var(--hero) * var(--u));
+  }
+}
+
+@container (min-width: 768px) {
+  .sec--hero .canvas {
+    --hero: 360;
+    min-height: calc(var(--dh) * var(--u) + var(--gap));
+  }
+}
+
+.sec--hero .canvas > :is(.t, .place, .art, .anchor):not(.hero, .art--hero-axe) {
+  --shift: var(--gap);
+}
+
+/* Tone: the top copy covers the hero and stops at --tone-cut; the other copy
+   moves down with the content below it. On desktop the tone over the hero is
+   all burning-bar glow, which moves, so the cut is 0. */
+.sec--hero .tone {
+  bottom: auto;
+  height: calc(var(--mh) * var(--u));
+  --tone-cut: var(--hero);
+}
+
+.sec--hero .tone--top {
+  clip-path: inset(0 0 calc((var(--mh) - var(--tone-cut)) * var(--u)) 0);
+}
+
+.sec--hero .tone--rest {
+  top: var(--gap);
+  clip-path: inset(calc(var(--tone-cut) * var(--u)) 0 0 0);
+}
+
+@container (min-width: 768px) {
+  .sec--hero .tone {
+    height: calc(var(--dh) * var(--u));
+    --tone-cut: 0;
+  }
+
+  .sec--hero .tone--top {
+    clip-path: inset(0 0 calc((var(--dh) - var(--tone-cut)) * var(--u)) 0);
   }
 }
 
@@ -280,7 +338,7 @@ a:hover .arrow--right {
 
 .anchor {
   position: absolute;
-  top: calc(var(--y) * var(--u));
+  top: calc(var(--y) * var(--u) + var(--shift, 0px));
   --y: var(--my);
 }
 
