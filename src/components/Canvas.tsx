@@ -13,6 +13,7 @@ export function Section({
   className = '',
   labelledBy,
   anchor,
+  hero = false,
   children,
 }: {
   id: SectionId
@@ -20,17 +21,31 @@ export function Section({
   className?: string
   labelledBy?: string
   anchor?: string
+  /**
+   * The section opens with the hero, which fills the first screen: everything
+   * not marked `hero` moves down by the space left over (see `.sec--hero`).
+   * The tone layer is drawn twice, the part over the hero held in place and the
+   * rest moved with the content below, so it stays registered to the photos.
+   */
+  hero?: boolean
   children: ReactNode
 }) {
   const style: CssVars = { '--mh': sectionHeight.m[id], '--dh': sectionHeight.d[id] }
+  const tones = hero ? ['tone tone--top', 'tone tone--rest'] : ['tone']
   return (
-    <section id={anchor} className={`sec sec--${tone} ${className}`} aria-labelledby={labelledBy}>
+    <section
+      id={anchor}
+      className={`sec sec--${tone} ${hero ? 'sec--hero' : ''} ${className}`}
+      aria-labelledby={labelledBy}
+    >
       <div className="canvas" style={style}>
         {children}
-        <picture className="tone" aria-hidden="true">
-          <source media="(min-width: 768px)" srcSet={`/images/desktop/tone-${id}.webp`} />
-          <img src={`/images/mobile/tone-${id}.webp`} alt="" loading="lazy" decoding="async" />
-        </picture>
+        {tones.map((cls) => (
+          <picture key={cls} className={cls} aria-hidden="true">
+            <source media="(min-width: 768px)" srcSet={`/images/desktop/tone-${id}.webp`} />
+            <img src={`/images/mobile/tone-${id}.webp`} alt="" loading="lazy" decoding="async" />
+          </picture>
+        ))}
       </div>
     </section>
   )
@@ -107,7 +122,7 @@ export function Art({ name, alt, priority = false }: { name: ArtName; alt: strin
     sizes.map((w) => `/images/${layout}/${name}-${w}.webp ${w}w`).join(', ')
   const maxDesktop = Math.round((a.d.w * 1440) / 603)
   return (
-    <picture className="art" style={style}>
+    <picture className={`art art--${name}`} style={style}>
       <source
         media="(min-width: 768px)"
         srcSet={set('desktop', a.d.sizes)}
