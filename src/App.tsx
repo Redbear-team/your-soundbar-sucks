@@ -278,9 +278,9 @@ function BlindTests() {
         m={[59, 2919]}
         d={[332, 1738]}
         lines={[
-          'Now soundbar makers split the bar into',
-          'separate boxes, trying for a wider sound.',
-          'That’s halfway to speakers.',
+          'Reviewers say that while many soundbars can',
+          'partly replicate surround sound, they can’t',
+          'fully match a good speaker package.',
         ]}
       />
       <Text v="source" sec="s2" m={[61, 2978]} d={[333, 1795]}>
