@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Arrow } from './components/Arrow'
+import { Arrow, OutArrow } from './components/Arrow'
 import { Art, Section, Text } from './components/Canvas'
 import { CouchCones } from './components/CouchCones'
 import { Faq } from './components/Faq'
@@ -7,7 +7,7 @@ import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { MenuPanel } from './components/MenuOverlay'
 import { textTop } from './design'
-import { BBC_STUDY, FIND_A_DEALER, HOW_IT_WORKS } from './links'
+import { AES_STUDY, BBC_STUDY, FIND_A_DEALER, HOW_IT_WORKS } from './links'
 import { useReveal } from './reveal'
 
 export default function App() {
@@ -244,6 +244,7 @@ function BlindTests() {
       <Text v="source" sec="s2" m={[58, 2628]} d={[59, 1639]}>
         <a href={BBC_STUDY} target="_blank" rel="noopener noreferrer">
           BBC R&amp;D, 2016
+          <OutArrow />
         </a>
       </Text>
 
@@ -264,7 +265,10 @@ function BlindTests() {
         ]}
       />
       <Text v="source" sec="s2" m={[59, 2805]} d={[332, 1622]}>
-        AES Convention, 1999
+        <a href={AES_STUDY} target="_blank" rel="noopener noreferrer">
+          AES Convention, 1999
+          <OutArrow />
+        </a>
       </Text>
 
       <Text as="h3" v="stat2" sec="s2" m={[59, 2863]} d={[332, 1681]} lines={['The bar is', 'breaking up.']} />

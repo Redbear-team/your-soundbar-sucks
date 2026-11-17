@@ -47,3 +47,7 @@ export const SUBSCRIBE_URL: string = import.meta.env.VITE_SUBSCRIBE_URL ?? main(
 
 /** Source for the BBC R&D soundbar listening test cited in the blind-test section. */
 export const BBC_STUDY = 'https://downloads.bbc.co.uk/rd/pubs/whp/whp-pdf-files/WHP320.pdf'
+
+/** Source for the Nokia Research Center virtual-surround test (AES Convention, 1999). */
+export const AES_STUDY =
+  'https://aaltodoc.aalto.fi/server/api/core/bitstreams/c85dee48-648e-4508-be04-14c83df9c724/content'
