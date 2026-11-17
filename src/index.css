@@ -268,6 +268,41 @@ ul {
   opacity: 0.75;
 }
 
+/* Cited sources that link to the study: a standing gold underline (so it reads
+   as a link on touch screens too) and a small ↗ for "opens elsewhere". Hover
+   makes the underline solid and a touch heavier, and nudges the arrow out. */
+.t--source a {
+  text-decoration: underline;
+  text-decoration-color: rgb(196 143 59 / 0.55);
+  text-decoration-thickness: max(1px, 0.07em);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.2s var(--ease);
+}
+
+.t--source a:hover,
+.t--source a:focus-visible {
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: max(1.5px, 0.1em);
+}
+
+.out-arrow {
+  display: inline-block;
+  width: 0.62em;
+  height: 0.62em;
+  margin-left: 0.28em;
+  vertical-align: 0.02em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s var(--ease);
+}
+
+.t--source a:hover .out-arrow {
+  transform: translate(0.1em, -0.1em);
+}
+
 .arrow {
   color: var(--gold);
   display: inline-block;

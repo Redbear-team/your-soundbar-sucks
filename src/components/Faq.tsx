@@ -8,7 +8,7 @@ type Item = { q: [string, string?]; a: ReactNode }
 // these answers reuse wording from the page and from www.audiocu.com.
 const items: Item[] = [
   {
-    q: ['Are speakers better', 'than a soundbar?'],
+    q: ['Are separate standalone speakers', 'better than a soundbar?'],
     a: (
       <>
         Yes. A soundbar can only cover 21 degrees. A pair of real speakers covers 60. In blind tests, listeners keep

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Arrow } from './components/Arrow'
+import { Arrow, OutArrow } from './components/Arrow'
 import { Art, Section, Text } from './components/Canvas'
 import { CouchCones } from './components/CouchCones'
 import { Faq } from './components/Faq'
@@ -7,7 +7,7 @@ import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { MenuPanel } from './components/MenuOverlay'
 import { textTop } from './design'
-import { FIND_A_DEALER, HOW_IT_WORKS } from './links'
+import { AES_STUDY, BBC_STUDY, FIND_A_DEALER, HOW_IT_WORKS, WHAT_HIFI } from './links'
 import { useReveal } from './reveal'
 
 export default function App() {
@@ -242,7 +242,10 @@ function BlindTests() {
         ]}
       />
       <Text v="source" sec="s2" m={[58, 2628]} d={[59, 1639]}>
-        BBC R&amp;D, 2016
+        <a href={BBC_STUDY} target="_blank" rel="noopener noreferrer">
+          BBC R&amp;D, 2016
+          <OutArrow />
+        </a>
       </Text>
 
       <Text as="h3" v="stat" sec="s2" m={[58, 2680]} d={[331, 1497]}>
@@ -262,7 +265,10 @@ function BlindTests() {
         ]}
       />
       <Text v="source" sec="s2" m={[59, 2805]} d={[332, 1622]}>
-        AES Convention, 1999
+        <a href={AES_STUDY} target="_blank" rel="noopener noreferrer">
+          AES Convention, 1999
+          <OutArrow />
+        </a>
       </Text>
 
       <Text as="h3" v="stat2" sec="s2" m={[59, 2863]} d={[332, 1681]} lines={['The bar is', 'breaking up.']} />
@@ -272,13 +278,16 @@ function BlindTests() {
         m={[59, 2919]}
         d={[332, 1738]}
         lines={[
-          'Now soundbar makers split the bar into',
-          'separate boxes, trying for a wider sound.',
-          'That’s halfway to speakers.',
+          'Reviewers say that while many soundbars can',
+          'partly replicate surround sound, they can’t',
+          'fully match a good speaker package.',
         ]}
       />
       <Text v="source" sec="s2" m={[61, 2978]} d={[333, 1795]}>
-        The Soundbar Aisle, 2026
+        <a href={WHAT_HIFI} target="_blank" rel="noopener noreferrer">
+          What Hi-Fi?, 2026
+          <OutArrow />
+        </a>
       </Text>
 
       <Text
