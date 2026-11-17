@@ -51,3 +51,6 @@ export const BBC_STUDY = 'https://downloads.bbc.co.uk/rd/pubs/whp/whp-pdf-files/
 /** Source for the Nokia Research Center virtual-surround test (AES Convention, 1999). */
 export const AES_STUDY =
   'https://aaltodoc.aalto.fi/server/api/core/bitstreams/c85dee48-648e-4508-be04-14c83df9c724/content'
+
+/** Source for the split-bar trend (What Hi-Fi? best surround sound systems). */
+export const WHAT_HIFI = 'https://www.whathifi.com/best-buys/best-surround-sound-systems'

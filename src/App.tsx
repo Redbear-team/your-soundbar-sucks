@@ -7,7 +7,7 @@ import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { MenuPanel } from './components/MenuOverlay'
 import { textTop } from './design'
-import { AES_STUDY, BBC_STUDY, FIND_A_DEALER, HOW_IT_WORKS } from './links'
+import { AES_STUDY, BBC_STUDY, FIND_A_DEALER, HOW_IT_WORKS, WHAT_HIFI } from './links'
 import { useReveal } from './reveal'
 
 export default function App() {
@@ -284,7 +284,10 @@ function BlindTests() {
         ]}
       />
       <Text v="source" sec="s2" m={[61, 2978]} d={[333, 1795]}>
-        The Soundbar Aisle, 2026
+        <a href={WHAT_HIFI} target="_blank" rel="noopener noreferrer">
+          What Hi-Fi?, 2026
+          <OutArrow />
+        </a>
       </Text>
 
       <Text
