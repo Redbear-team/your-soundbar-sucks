@@ -7,7 +7,7 @@ import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { MenuPanel } from './components/MenuOverlay'
 import { textTop } from './design'
-import { FIND_A_DEALER, HOW_IT_WORKS } from './links'
+import { BBC_STUDY, FIND_A_DEALER, HOW_IT_WORKS } from './links'
 import { useReveal } from './reveal'
 
 export default function App() {
@@ -242,7 +242,9 @@ function BlindTests() {
         ]}
       />
       <Text v="source" sec="s2" m={[58, 2628]} d={[59, 1639]}>
-        BBC R&amp;D, 2016
+        <a href={BBC_STUDY} target="_blank" rel="noopener noreferrer">
+          BBC R&amp;D, 2016
+        </a>
       </Text>
 
       <Text as="h3" v="stat" sec="s2" m={[58, 2680]} d={[331, 1497]}>

@@ -44,3 +44,6 @@ export const FIND_A_DEALER = main('/find-a-dealer')
  * hosted on another domain.
  */
 export const SUBSCRIBE_URL: string = import.meta.env.VITE_SUBSCRIBE_URL ?? main('/api/subscribe')
+
+/** Source for the BBC R&D soundbar listening test cited in the blind-test section. */
+export const BBC_STUDY = 'https://downloads.bbc.co.uk/rd/pubs/whp/whp-pdf-files/WHP320.pdf'
