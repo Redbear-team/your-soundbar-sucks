@@ -10,7 +10,7 @@ const MAX_STAGGER_STEPS = 5
  * animates in. Waiting until it's well into view makes the entrance land where
  * the reader is looking, rather than at the fold.
  */
-const TRIGGER_LINE = '-20%'
+const TRIGGER_LINE = '-30%'
 
 /**
  * Turns reveal styling on. Call before the first render so nothing flashes in
